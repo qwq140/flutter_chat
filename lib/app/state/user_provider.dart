@@ -22,6 +22,9 @@ class UserProvider extends ChangeNotifier {
 
   Future setUser(User? user) async {
     if (user == null) {
+      print('로그아웃?');
+      _userModel = null;
+      _user = null;
       return;
     }
     _user = user;
@@ -41,4 +44,6 @@ class UserProvider extends ChangeNotifier {
   UserModel? get userModel => _userModel;
 
   User? get user => _user;
+
+  bool get isLogin => _userModel != null;
 }
