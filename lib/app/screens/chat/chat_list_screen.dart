@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({Key? key}) : super(key: key);
@@ -11,8 +12,8 @@ class ChatListScreen extends StatelessWidget {
         backgroundColor: Colors.black,
         actions: [
           IconButton(
-            onPressed: () {
-
+            onPressed: () async {
+              context.goNamed('create');
             },
             icon: const Icon(Icons.add),
           ),

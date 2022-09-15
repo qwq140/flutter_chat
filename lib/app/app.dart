@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/app/screens/auth/login_screen.dart';
 import 'package:flutter_chat/app/screens/chat/chat_list_screen.dart';
+import 'package:flutter_chat/app/screens/chat/chatroom_create_screen.dart';
 import 'package:flutter_chat/app/state/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -10,10 +11,19 @@ final UserProvider userProvider = UserProvider();
 final GoRouter _router = GoRouter(
   routes: <GoRoute>[
     GoRoute(
-      path: '/',
+      name: 'home',
+      path: '/chatroom',
       builder: (BuildContext context, GoRouterState state) => const ChatListScreen(),
+      routes: [
+        GoRoute(
+          name: 'create',
+          path: 'create',
+          builder: (BuildContext context, GoRouterState state) => const ChatroomCreateScreen(),
+        )
+      ]
     ),
     GoRoute(
+      name: 'login',
       path: '/login',
       builder: (BuildContext context, GoRouterState state) => const LoginScreen(),
     ),
@@ -21,10 +31,10 @@ final GoRouter _router = GoRouter(
   refreshListenable: userProvider,
   redirect: (state) {
     final isLogin = userProvider.isLogin;
-    final loggingIn = state.subloc == '/login';
-    if (!isLogin) return loggingIn ? null : '/login';
+    final loggingIn = state.subloc == state.namedLocation('login');
+    if (!isLogin) return loggingIn ? null : state.namedLocation('login');
 
-    if (loggingIn) return '/';
+    if (loggingIn) return state.namedLocation('home');
 
     return null;
   }
