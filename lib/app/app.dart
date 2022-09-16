@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat/app/screens/auth/login_screen.dart';
 import 'package:flutter_chat/app/screens/chat/chat_list_screen.dart';
 import 'package:flutter_chat/app/screens/chat/chatroom_create_screen.dart';
+import 'package:flutter_chat/app/state/chatroom_create_provider.dart';
+import 'package:flutter_chat/app/state/chatroom_list_provider.dart';
 import 'package:flutter_chat/app/state/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -13,12 +15,18 @@ final GoRouter _router = GoRouter(
     GoRoute(
       name: 'home',
       path: '/chatroom',
-      builder: (BuildContext context, GoRouterState state) => const ChatListScreen(),
+      builder: (BuildContext context, GoRouterState state) => ChangeNotifierProvider<ChatroomListProvider>(
+        create: (context) => ChatroomListProvider(),
+        child: const ChatListScreen(),
+      ),
       routes: [
         GoRoute(
           name: 'create',
           path: 'create',
-          builder: (BuildContext context, GoRouterState state) => const ChatroomCreateScreen(),
+          builder: (BuildContext context, GoRouterState state) => ChangeNotifierProvider<ChatroomCreateProvider>(
+            create: (context) => ChatroomCreateProvider(),
+            child: const ChatroomCreateScreen(),
+          ),
         )
       ]
     ),
@@ -37,7 +45,8 @@ final GoRouter _router = GoRouter(
     if (loggingIn) return state.namedLocation('home');
 
     return null;
-  }
+  },
+  urlPathStrategy: UrlPathStrategy.path
 
 );
 

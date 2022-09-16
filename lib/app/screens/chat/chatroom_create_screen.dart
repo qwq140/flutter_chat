@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/app/const/spoqa.dart';
+import 'package:flutter_chat/app/data/user_model.dart';
+import 'package:flutter_chat/app/screens/chat/widgets/chatroom_image_select.dart';
+import 'package:flutter_chat/app/state/chatroom_create_provider.dart';
+import 'package:flutter_chat/app/state/chatroom_list_provider.dart';
+import 'package:flutter_chat/app/state/user_provider.dart';
+import 'package:flutter_chat/app/utils/image_utils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class ChatroomCreateScreen extends StatefulWidget {
   const ChatroomCreateScreen({Key? key}) : super(key: key);
@@ -21,8 +29,26 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
     super.initState();
   }
 
+  void _showDialog(String text){
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(text),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('확인'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('dsdsds');
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -37,7 +63,17 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                bool validate = context.read<ChatroomCreateProvider>().validate();
+                if (!validate) {
+                  _showDialog('채팅방 이름을 입력해주세요');
+                  return;
+                }
+                UserModel userModel = context.read<UserProvider>().userModel!;
+                await context.read<ChatroomCreateProvider>().submit(userModel.userKey);
+                _showDialog('등록이 완료되었습니다.');
+                context.pop();
+              },
               child: const Text(
                 '등록',
                 style: Spoqa.white_s14_w400,
@@ -51,45 +87,21 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Spacer(
+              const Spacer(
                 flex: 100,
               ),
-              Align(
+              const Align(
                 alignment: Alignment.center,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: 130,
-                      height: 130,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.grey),
-                        color: Colors.purple,
-                      ),
-                    ),
-                    Positioned(
-                      right: -10,
-                      bottom: 0,
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.white),
-                        child: Icon(
-                          Icons.camera_alt,
-                          size: 25,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                child: ChatroomImageSelect(),
               ),
-              Spacer(
+              const Spacer(
                 flex: 150,
               ),
               TextFormField(
                 controller: _titleController,
+                onChanged: (value) {
+                  context.read<ChatroomCreateProvider>().title = value;
+                },
                 decoration: InputDecoration(
                   labelText: '채팅방 이름',
                   labelStyle: Spoqa.grey_s14_w400,
@@ -108,7 +120,10 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
               ),
               TextFormField(
                 controller: _introController,
-                decoration: InputDecoration(
+                onChanged: (value) {
+                  context.read<ChatroomCreateProvider>().intro = value;
+                },
+                decoration: const InputDecoration(
                   labelText: '채팅방 소개',
                   labelStyle: Spoqa.grey_s14_w400,
                   floatingLabelStyle: Spoqa.black_s14_w400,

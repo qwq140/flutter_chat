@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class ChatroomModel {
   late String chatroomKey;
@@ -9,7 +10,7 @@ class ChatroomModel {
   late DateTime lastMsgDate;
   late String lastMsgUserKey;
   late String title;
-  late String intro;
+  String? intro;
   late List<String> userKeys;
   DocumentReference? reference;
 
@@ -22,7 +23,7 @@ class ChatroomModel {
     required this.lastMsgDate,
     this.lastMsgUserKey = "",
     required this.title,
-    required this.intro,
+    this.intro,
     required this.userKeys,
     this.reference,
   });

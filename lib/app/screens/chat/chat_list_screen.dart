@@ -13,7 +13,7 @@ class ChatListScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              context.goNamed('create');
+              context.go('/chatroom/create');
             },
             icon: const Icon(Icons.add),
           ),
