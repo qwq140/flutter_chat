@@ -30,18 +30,19 @@ class ChatroomModel {
 
   ChatroomModel.fromJson(Map<String, dynamic> json, this.chatroomKey, this.reference) {
     imageUrl = json['imageUrl'];
-    hostKey = json['hostKey'];
+    hostKey = json['hostKey'] ?? "";
     createdDate = json['createdDate'] == null ? DateTime.now() : (json['createdDate'] as Timestamp).toDate();
-    lastMsg = json['lastMsg'];
+    lastMsg = json['lastMsg'] ?? "";
     lastMsgDate = json['lastMsgDate'] == null ? DateTime.now() : (json['lastMsgDate'] as Timestamp).toDate();
-    lastMsgUserKey = json['lastMsgUserKey'];
-    title = json['title'];
+    lastMsgUserKey = json['lastMsgUserKey'] ?? "";
+    title = json['title'] ?? "";
     intro = json['intro'];
-    userKeys = json['userKeys'];
+    userKeys =  json['userKeys'] != null ? json['userKeys'].cast<String>() : [];
   }
 
   // : 이니셜라이져
   ChatroomModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) : this.fromJson(snapshot.data()!, snapshot.id, snapshot.reference);
+  ChatroomModel.fromQuerySnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot) : this.fromJson(snapshot.data(), snapshot.id, snapshot.reference);
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

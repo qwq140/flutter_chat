@@ -7,6 +7,7 @@ class Spoqa {
   static const black_s40_w700 = CustomTextStyle(fontFamily: spoqa, color: Colors.black, fontSize: 40, fontWeight: FontWeight.w700);
   static const black_s14_w400 = CustomTextStyle(fontFamily: spoqa, color: Colors.black, fontSize: 14, fontWeight: FontWeight.w400);
   static const black_s10_w400 = CustomTextStyle(fontFamily: spoqa, color: Colors.black, fontSize: 10, fontWeight: FontWeight.w400);
+  static const black_s18_w500 = CustomTextStyle(fontFamily: spoqa, color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500);
   
   static const grey_s14_w400 = CustomTextStyle(fontFamily: spoqa, color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w400);
   

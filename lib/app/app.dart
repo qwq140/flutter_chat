@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat/app/screens/auth/login_screen.dart';
 import 'package:flutter_chat/app/screens/chat/chat_list_screen.dart';
 import 'package:flutter_chat/app/screens/chat/chatroom_create_screen.dart';
+import 'package:flutter_chat/app/screens/chat/chatroom_screen.dart';
+import 'package:flutter_chat/app/state/chat_provider.dart';
 import 'package:flutter_chat/app/state/chatroom_create_provider.dart';
 import 'package:flutter_chat/app/state/chatroom_list_provider.dart';
 import 'package:flutter_chat/app/state/user_provider.dart';
@@ -27,7 +29,18 @@ final GoRouter _router = GoRouter(
             create: (context) => ChatroomCreateProvider(),
             child: const ChatroomCreateScreen(),
           ),
-        )
+        ),
+        GoRoute(
+          name: 'detail',
+          path: ':chatroomKey',
+          builder: (BuildContext context, GoRouterState state) {
+            String chatroomKey = state.params['chatroomKey'] ?? "";
+            return ChangeNotifierProvider<ChatProvider>(
+              create: (context) => ChatProvider(),
+              child: const ChatroomScreen(),
+            );
+          }
+        ),
       ]
     ),
     GoRoute(

@@ -17,4 +17,24 @@ class ChatService {
       await documentReference.set(chatroom.toJson());
     }
   }
+
+  Future<List<ChatroomModel>> getAllChatList(String userKey) async {
+    print('dsdsds');
+    List<ChatroomModel> chatroomList = [];
+
+    QuerySnapshot<Map<String, dynamic>> chatroomSnapshot = await FirebaseFirestore.instance.collection('chatrooms').get();
+    print('dsdskjddsjkh');
+
+    for (var documentSnapshot in chatroomSnapshot.docs) {
+      print('fsdkfdsjkf');
+      print(documentSnapshot.data());
+
+      chatroomList.add(ChatroomModel.fromQuerySnapshot(documentSnapshot));
+      print('dsdjskdsh');
+    }
+
+    print(chatroomList);
+
+    return chatroomList;
+  }
 }
