@@ -47,8 +47,8 @@ class Chat extends StatelessWidget {
           child: Container(
             width: 40,
             height: 40,
-            color: Colors.purple,
-            child: profileUrl == null ? null : Image.network(profileUrl!, fit: BoxFit.cover,),
+            color: Colors.grey,
+            child: profileUrl == null ? Icon(Icons.person, size: 30, color: Colors.white,) : Image.network(profileUrl!, fit: BoxFit.cover,),
           ),
         ),
         SizedBox(width: 5,),
