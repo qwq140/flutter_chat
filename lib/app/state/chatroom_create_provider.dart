@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/app/data/chatroom_model.dart';
+import 'package:flutter_chat/app/data/user_model.dart';
 import 'package:flutter_chat/app/repo/chat_service.dart';
 import 'package:flutter_chat/app/repo/file_service.dart';
 import 'package:intl/intl.dart';
@@ -38,10 +39,9 @@ class ChatroomCreateProvider extends ChangeNotifier {
     return true;
   }
 
-  /// TODO 09.16 01:59 파이어베이스 스토리지 테스트진행하기
-  Future submit(String userKey) async {
+  Future submit(UserModel userModel) async {
     String formatDate = DateFormat('yyyyMMddHHmm').format(DateTime.now());
-    String chatroomKey = 'CHATROOM_$formatDate$userKey';
+    String chatroomKey = 'CHATROOM_$formatDate${userModel.userKey}';
 
     String? downloadImageUrl;
 
@@ -52,14 +52,14 @@ class ChatroomCreateProvider extends ChangeNotifier {
     ChatroomModel chatroomModel = ChatroomModel(
       chatroomKey: chatroomKey,
       imageUrl: downloadImageUrl,
-      hostKey: userKey,
+      hostKey: userModel.userKey,
       createdDate: DateTime.now(),
       lastMsgDate: DateTime.now(),
       title: title ?? "",
       intro: intro,
-      userKeys: [userKey],
+      userKeys: [userModel.userKey],
     );
 
-    await ChatService().createNewChatroom(chatroomModel);
+    await ChatService().createNewChatroom(chatroomModel, userModel);
   }
 }

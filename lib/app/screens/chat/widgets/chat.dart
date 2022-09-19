@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat/app/const/spoqa.dart';
 import 'package:flutter_chat/app/screens/chat/widgets/chat_bubble.dart';
 
 class Chat extends StatelessWidget {
-  const Chat({Key? key, required this.username, required this.text, required this.isMine,}) : super(key: key);
+  Chat({Key? key, required this.username, this.profileUrl, required this.text, required this.isMine,}) : super(key: key);
 
   final String username;
+  String? profileUrl;
   final String text;
   final bool isMine;
 
@@ -27,7 +29,7 @@ class Chat extends StatelessWidget {
             constraints: BoxConstraints(
               maxWidth: deviceWidth * 0.6,
             ),
-            child: Text(text),
+            child: Text(text, style: Spoqa.black_s14_w400,),
           ),
         ),
       ],
@@ -46,6 +48,7 @@ class Chat extends StatelessWidget {
             width: 40,
             height: 40,
             color: Colors.purple,
+            child: profileUrl == null ? null : Image.network(profileUrl!, fit: BoxFit.cover,),
           ),
         ),
         SizedBox(width: 5,),
@@ -60,7 +63,7 @@ class Chat extends StatelessWidget {
                 constraints: BoxConstraints(
                   maxWidth: deviceWidth * 0.6,
                 ),
-                child: Text(text),
+                child: Text(text, style: Spoqa.white_s14_w400),
               ),
             ),
           ],

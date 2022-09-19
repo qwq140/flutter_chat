@@ -12,13 +12,13 @@ class ChatProvider extends ChangeNotifier {
   ChatProvider(this._chatroomKey){
     ChatService().connectChatroom(_chatroomKey).listen((chatroomModel) {
       _chatroomModel = chatroomModel;
+      if(_chatList.isNotEmpty && _chatList.first.reference == null) _chatList.removeAt(0);
       if(_chatList.isEmpty){
         ChatService().getChatList(_chatroomKey).then((chatList){
           _chatList.addAll(chatList);
           notifyListeners();
         });
       } else {
-        if(_chatList.first.reference == null) _chatList.removeAt(0);
         ChatService().getLatestChatList(_chatroomKey, _chatList.first.reference!).then((chatList){
           _chatList.insertAll(0, chatList);
           notifyListeners();
@@ -27,8 +27,8 @@ class ChatProvider extends ChangeNotifier {
     });
   }
 
-  Future sendChat(String userKey, String msg, String username) async {
-    ChatModel chatModel = ChatModel(userKey: userKey, msg: msg, username: username, createdDate: DateTime.now());
+  Future sendChat({required String userKey, required String msg, required String username, String? profileUrl}) async {
+    ChatModel chatModel = ChatModel(userKey: userKey, msg: msg, username: username, profileUrl: profileUrl, createdDate: DateTime.now());
 
     // 임시로 화면에 보여줌
     _chatList.insert(0, chatModel);

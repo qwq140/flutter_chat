@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_chat/app/data/chat_model.dart';
 import 'package:flutter_chat/app/data/chatroom_model.dart';
+import 'package:flutter_chat/app/data/user_model.dart';
 
 class ChatService {
   static final ChatService _instance = ChatService._internal();
@@ -11,20 +12,32 @@ class ChatService {
 
   ChatService._internal();
 
-  Future createNewChatroom(ChatroomModel chatroom) async {
-    DocumentReference<Map<String, dynamic>> documentReference = FirebaseFirestore.instance.collection('chatrooms').doc(chatroom.chatroomKey);
+  Future createNewChatroom(ChatroomModel chatroom, UserModel userModel) async {
+    DocumentReference<
+        Map<String, dynamic>> documentReference = FirebaseFirestore.instance
+        .collection('chatrooms').doc(chatroom.chatroomKey);
 
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await documentReference.get();
+    final DocumentSnapshot<
+        Map<String, dynamic>> documentSnapshot = await documentReference.get();
 
-    if(!documentSnapshot.exists){
+    if (!documentSnapshot.exists) {
       await documentReference.set(chatroom.toJson());
+      DocumentReference<Map<String, dynamic>> chatDocRef = FirebaseFirestore
+          .instance
+          .collection('chatrooms')
+          .doc(documentSnapshot.id)
+          .collection('users')
+          .doc();
+      await chatDocRef.set(userModel.toJson());
     }
   }
 
   Future<List<ChatroomModel>> getChatroomList(String userKey) async {
     List<ChatroomModel> chatroomList = [];
 
-    QuerySnapshot<Map<String, dynamic>> chatroomSnapshot = await FirebaseFirestore.instance.collection('chatrooms').get();
+    QuerySnapshot<
+        Map<String, dynamic>> chatroomSnapshot = await FirebaseFirestore
+        .instance.collection('chatrooms').get();
 
     for (var documentSnapshot in chatroomSnapshot.docs) {
       chatroomList.add(ChatroomModel.fromQuerySnapshot(documentSnapshot));
@@ -34,13 +47,15 @@ class ChatService {
   }
 
   Future createNewChat(ChatModel chatModel, String chatroomKey) async {
-    DocumentReference<Map<String, dynamic>> chatDocRef = FirebaseFirestore.instance
+    DocumentReference<Map<String, dynamic>> chatDocRef = FirebaseFirestore
+        .instance
         .collection('chatrooms')
         .doc(chatroomKey)
         .collection('chats')
         .doc();
 
-    DocumentReference<Map<String, dynamic>> chatroomDocRef = FirebaseFirestore.instance.collection('chatrooms').doc(chatroomKey);
+    DocumentReference<Map<String, dynamic>> chatroomDocRef = FirebaseFirestore
+        .instance.collection('chatrooms').doc(chatroomKey);
 
     // chatroom의 lastMsg, lastMsgDate, lastMsgUserKey 갱신하기
     await FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -65,7 +80,9 @@ class ChatService {
   // stream 사용시 주어진 값으로 가공할때 사용
   // firebase를 사용할 때 받는값은 DocumentSnapshot
   // DocumentSnapshot을 ChatroomModel로 가공
-  var snapshotToChatroom = StreamTransformer<DocumentSnapshot<Map<String, dynamic>>, ChatroomModel>.fromHandlers(
+  var snapshotToChatroom = StreamTransformer<
+      DocumentSnapshot<Map<String, dynamic>>,
+      ChatroomModel>.fromHandlers(
     handleData: (data, sink) {
       ChatroomModel chatroomModel = ChatroomModel.fromSnapshot(data);
       sink.add(chatroomModel);
@@ -87,13 +104,18 @@ class ChatService {
 
     for (var docSnapshot in snapshot.docs) {
       ChatModel chatModel = ChatModel.fromQuerySnapshot(docSnapshot);
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance.collection('users').doc(chatModel.userKey).get();
+      chatModel.username = userDoc.data()!["username"];
+      chatModel.profileUrl = userDoc.data()!["profileUrl"];
       chatList.add(chatModel);
     }
     return chatList;
   }
 
   // 화면상의 최신 채팅을 기준으로 최신 채팅 가져오기
-  Future<List<ChatModel>> getLatestChatList(String chatroomKey, DocumentReference currentLatestChatRef) async {
+  Future<List<ChatModel>> getLatestChatList(String chatroomKey,
+      DocumentReference currentLatestChatRef) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection('chatrooms')
@@ -107,6 +129,10 @@ class ChatService {
 
     for (var docSnapshot in snapshot.docs) {
       ChatModel chatModel = ChatModel.fromQuerySnapshot(docSnapshot);
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance.collection('users').doc(chatModel.userKey).get();
+      chatModel.username = userDoc.data()!["username"];
+      chatModel.profileUrl = userDoc.data()!["profileUrl"];
       chatList.add(chatModel);
     }
     return chatList;
@@ -114,24 +140,27 @@ class ChatService {
 
   // 채팅방 참여하기
   Future joinChatroom(String chatroomKey, String userKey) async {
-    DocumentReference<Map<String, dynamic>> chatroomDocRef = FirebaseFirestore.instance
+    DocumentReference<Map<String, dynamic>> chatroomDocRef = FirebaseFirestore
+        .instance
         .collection('chatrooms')
         .doc(chatroomKey);
 
-    ChatroomModel chatroomModel = ChatroomModel.fromSnapshot(await chatroomDocRef.get());
+    ChatroomModel chatroomModel = ChatroomModel.fromSnapshot(
+        await chatroomDocRef.get());
 
-    if(chatroomModel.userKeys.contains(userKey)) return;
+    if (chatroomModel.userKeys.contains(userKey)) return;
 
     List<String> updateUserKeys = chatroomModel.userKeys;
 
     updateUserKeys.add(userKey);
 
     await chatroomDocRef.update({
-      "userKeys" : updateUserKeys
+      "userKeys": updateUserKeys
     });
   }
 
-  Future<List<ChatModel>> getOldChatList(String chatroomKey, DocumentReference currentOldestChatRef) async {
+  Future<List<ChatModel>> getOldChatList(String chatroomKey,
+      DocumentReference currentOldestChatRef) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection('chatrooms')
@@ -145,6 +174,10 @@ class ChatService {
 
     for (var docSnapshot in snapshot.docs) {
       ChatModel chatModel = ChatModel.fromQuerySnapshot(docSnapshot);
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance.collection('users').doc(chatModel.userKey).get();
+      chatModel.username = userDoc.data()!["username"];
+      chatModel.profileUrl = userDoc.data()!["profileUrl"];
       chatList.add(chatModel);
     }
     return chatList;

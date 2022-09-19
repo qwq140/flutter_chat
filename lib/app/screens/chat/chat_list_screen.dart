@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/app/const/spoqa.dart';
 import 'package:flutter_chat/app/data/chatroom_model.dart';
+import 'package:flutter_chat/app/data/user_model.dart';
 import 'package:flutter_chat/app/state/chatroom_list_provider.dart';
 import 'package:flutter_chat/app/state/user_provider.dart';
 import 'package:go_router/go_router.dart';

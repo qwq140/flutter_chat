@@ -6,6 +6,7 @@ class ChatModel {
   late String userKey;
   late String msg;
   late String username;
+  String? profileUrl;
   late DateTime createdDate;
   DocumentReference? reference;
 
@@ -13,6 +14,7 @@ class ChatModel {
     required this.userKey,
     required this.msg,
     required this.username,
+    this.profileUrl,
     required this.createdDate,
     this.reference,
   });
@@ -21,6 +23,7 @@ class ChatModel {
     userKey = json['userKey'] ?? "";
     msg = json['msg'] ?? "";
     username = json['username'] ?? "";
+    profileUrl = json['profileUrl'];
     createdDate = json['createdDate'] == null ? DateTime.now() : (json['createdDate'] as Timestamp).toDate();
   }
 
@@ -29,6 +32,7 @@ class ChatModel {
     map['userKey'] = userKey;
     map['msg'] = msg;
     map['username'] = username;
+    map['profileUrl'] = profileUrl;
     map['createdDate'] = createdDate;
     return map;
   }

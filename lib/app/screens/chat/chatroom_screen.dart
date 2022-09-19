@@ -65,6 +65,7 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                     itemBuilder: (context, index) {
                       return Chat(
                         username: chatList[index].username,
+                        profileUrl: chatList[index].profileUrl,
                         text: chatList[index].msg,
                         isMine: chatList[index].userKey == userModel.userKey,
                       );
@@ -101,7 +102,7 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                     IconButton(
                       onPressed: () {
                         String text = _textEditingController.text;
-                        context.read<ChatProvider>().sendChat(userModel.userKey, text, userModel.username);
+                        context.read<ChatProvider>().sendChat(username: userModel.username, msg: text, userKey: userModel.userKey, profileUrl: userModel.profileUrl);
                         _textEditingController.clear();
                       },
                       icon: Icon(

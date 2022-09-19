@@ -70,7 +70,7 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
                   return;
                 }
                 UserModel userModel = context.read<UserProvider>().userModel!;
-                await context.read<ChatroomCreateProvider>().submit(userModel.userKey);
+                await context.read<ChatroomCreateProvider>().submit(userModel);
                 _showDialog('등록이 완료되었습니다.');
                 context.pop();
               },
