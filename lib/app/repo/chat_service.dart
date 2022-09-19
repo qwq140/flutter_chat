@@ -89,7 +89,7 @@ class ChatService {
     },
   );
 
-  // 채팅룸 첫 로딩시에 최신순으로 채팅 10개 조회
+  // 채팅룸 첫 로딩시에 최신순으로 채팅 20개 조회
   Future<List<ChatModel>> getChatList(String chatroomKey) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
@@ -97,17 +97,13 @@ class ChatService {
         .doc(chatroomKey)
         .collection('chats')
         .orderBy('createdDate', descending: true)
-        .limit(10)
+        .limit(20)
         .get();
 
     List<ChatModel> chatList = [];
 
     for (var docSnapshot in snapshot.docs) {
       ChatModel chatModel = ChatModel.fromQuerySnapshot(docSnapshot);
-      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
-          .instance.collection('users').doc(chatModel.userKey).get();
-      chatModel.username = userDoc.data()!["username"];
-      chatModel.profileUrl = userDoc.data()!["profileUrl"];
       chatList.add(chatModel);
     }
     return chatList;
@@ -129,10 +125,6 @@ class ChatService {
 
     for (var docSnapshot in snapshot.docs) {
       ChatModel chatModel = ChatModel.fromQuerySnapshot(docSnapshot);
-      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
-          .instance.collection('users').doc(chatModel.userKey).get();
-      chatModel.username = userDoc.data()!["username"];
-      chatModel.profileUrl = userDoc.data()!["profileUrl"];
       chatList.add(chatModel);
     }
     return chatList;
@@ -168,16 +160,13 @@ class ChatService {
         .collection('chats')
         .orderBy('createdDate', descending: true)
         .startAfterDocument(await currentOldestChatRef.get())
+        .limit(20)
         .get();
 
     List<ChatModel> chatList = [];
 
     for (var docSnapshot in snapshot.docs) {
       ChatModel chatModel = ChatModel.fromQuerySnapshot(docSnapshot);
-      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
-          .instance.collection('users').doc(chatModel.userKey).get();
-      chatModel.username = userDoc.data()!["username"];
-      chatModel.profileUrl = userDoc.data()!["profileUrl"];
       chatList.add(chatModel);
     }
     return chatList;
