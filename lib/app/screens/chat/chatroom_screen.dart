@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat/app/data/chat_model.dart';
+import 'package:flutter_chat/app/screens/chat/widgets/chat.dart';
+import 'package:flutter_chat/app/screens/chat/widgets/chat_bubble.dart';
+import 'package:flutter_chat/app/state/chat_provider.dart';
+import 'package:flutter_chat/app/state/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class ChatroomScreen extends StatefulWidget {
   const ChatroomScreen({Key? key}) : super(key: key);
@@ -8,7 +14,6 @@ class ChatroomScreen extends StatefulWidget {
 }
 
 class _ChatroomScreenState extends State<ChatroomScreen> {
-
   late final TextEditingController _textEditingController;
 
   @override
@@ -26,29 +31,30 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String userKey = context.read<UserProvider>().userModel!.userKey;
+    List<ChatModel> chatList = context.watch<ChatProvider>().chatList;
     return Scaffold(
       body: Column(
         children: [
           Expanded(
             child: ListView.separated(
+              reverse: true,
               itemBuilder: (context, index) {
-                return Container(
-                  width: 100,
-                  height: 20,
-                  color: Colors.black,
-                );
+                return Chat(text: chatList[index].msg, isMine: chatList[index].userKey == userKey,);
               },
               separatorBuilder: (context, index) {
                 return const SizedBox(height: 12);
               },
-              itemCount: 10,
+              itemCount: chatList.length,
             ),
           ),
           SizedBox(
             height: 40,
             child: Row(
               children: [
-                SizedBox(width: 10,),
+                SizedBox(
+                  width: 10,
+                ),
                 Expanded(
                   child: TextFormField(
                     controller: _textEditingController,
@@ -67,7 +73,8 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                 IconButton(
                   onPressed: () {
                     String text = _textEditingController.text;
-                    print(text);
+                    context.read<ChatProvider>().sendChat(userKey, text);
+                    _textEditingController.clear();
                   },
                   icon: Icon(
                     Icons.send,

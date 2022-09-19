@@ -8,7 +8,7 @@ class ChatroomListProvider extends ChangeNotifier {
   List<ChatroomModel> chatroomList = [];
 
   Future<void> getChatroomList(String userKey) async {
-    chatroomList = await ChatService().getAllChatList(userKey);
+    chatroomList = await ChatService().getChatroomList(userKey);
     notifyListeners();
   }
 

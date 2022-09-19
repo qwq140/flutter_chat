@@ -36,7 +36,7 @@ final GoRouter _router = GoRouter(
           builder: (BuildContext context, GoRouterState state) {
             String chatroomKey = state.params['chatroomKey'] ?? "";
             return ChangeNotifierProvider<ChatProvider>(
-              create: (context) => ChatProvider(),
+              create: (context) => ChatProvider(chatroomKey),
               child: const ChatroomScreen(),
             );
           }
