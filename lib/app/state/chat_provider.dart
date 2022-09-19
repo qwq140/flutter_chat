@@ -11,7 +11,6 @@ class ChatProvider extends ChangeNotifier {
 
   ChatProvider(this._chatroomKey){
     ChatService().connectChatroom(_chatroomKey).listen((chatroomModel) {
-      print('dskjfdk');
       _chatroomModel = chatroomModel;
       if(_chatList.isEmpty){
         ChatService().getChatList(_chatroomKey).then((chatList){
@@ -28,14 +27,20 @@ class ChatProvider extends ChangeNotifier {
     });
   }
 
-  Future sendChat(String userKey, String msg) async {
-    ChatModel chatModel = ChatModel(userKey: userKey, msg: msg, createdDate: DateTime.now());
+  Future sendChat(String userKey, String msg, String username) async {
+    ChatModel chatModel = ChatModel(userKey: userKey, msg: msg, username: username, createdDate: DateTime.now());
 
     // 임시로 화면에 보여줌
     _chatList.insert(0, chatModel);
     notifyListeners();
 
     await ChatService().createNewChat(chatModel, _chatroomKey);
+  }
+
+  Future<void> getOldChatList() async {
+    List<ChatModel> oldChatList = await ChatService().getOldChatList(chatroomKey, _chatList.last.reference!);
+    _chatList.addAll(oldChatList);
+    notifyListeners();
   }
 
   List<ChatModel> get chatList => _chatList;

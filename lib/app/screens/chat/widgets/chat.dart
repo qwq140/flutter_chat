@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat/app/screens/chat/widgets/chat_bubble.dart';
 
 class Chat extends StatelessWidget {
-  const Chat({Key? key, required this.text, required this.isMine}) : super(key: key);
+  const Chat({Key? key, required this.username, required this.text, required this.isMine,}) : super(key: key);
 
+  final String username;
   final String text;
   final bool isMine;
 
@@ -51,7 +52,7 @@ class Chat extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('fdsfd'),
+            Text(username),
             CustomPaint(
               painter: ChatBubble(color: Colors.grey, alignment: Alignment.topLeft),
               child: Container(

@@ -5,12 +5,14 @@ class ChatModel {
   late String chatKey;
   late String userKey;
   late String msg;
+  late String username;
   late DateTime createdDate;
   DocumentReference? reference;
 
   ChatModel({
     required this.userKey,
     required this.msg,
+    required this.username,
     required this.createdDate,
     this.reference,
   });
@@ -18,6 +20,7 @@ class ChatModel {
   ChatModel.fromJson(Map<String, dynamic> json, this.chatKey, this.reference){
     userKey = json['userKey'] ?? "";
     msg = json['msg'] ?? "";
+    username = json['username'] ?? "";
     createdDate = json['createdDate'] == null ? DateTime.now() : (json['createdDate'] as Timestamp).toDate();
   }
 
@@ -25,6 +28,7 @@ class ChatModel {
     final map = <String, dynamic>{};
     map['userKey'] = userKey;
     map['msg'] = msg;
+    map['username'] = username;
     map['createdDate'] = createdDate;
     return map;
   }

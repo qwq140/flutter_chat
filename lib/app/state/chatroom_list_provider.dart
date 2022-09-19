@@ -12,4 +12,8 @@ class ChatroomListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future joinChatroom(String userKey, String chatroomKey) async {
+    await ChatService().joinChatroom(chatroomKey, userKey);
+  }
+
 }

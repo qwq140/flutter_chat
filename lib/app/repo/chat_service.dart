@@ -111,4 +111,42 @@ class ChatService {
     }
     return chatList;
   }
+
+  // 채팅방 참여하기
+  Future joinChatroom(String chatroomKey, String userKey) async {
+    DocumentReference<Map<String, dynamic>> chatroomDocRef = FirebaseFirestore.instance
+        .collection('chatrooms')
+        .doc(chatroomKey);
+
+    ChatroomModel chatroomModel = ChatroomModel.fromSnapshot(await chatroomDocRef.get());
+
+    if(chatroomModel.userKeys.contains(userKey)) return;
+
+    List<String> updateUserKeys = chatroomModel.userKeys;
+
+    updateUserKeys.add(userKey);
+
+    await chatroomDocRef.update({
+      "userKeys" : updateUserKeys
+    });
+  }
+
+  Future<List<ChatModel>> getOldChatList(String chatroomKey, DocumentReference currentOldestChatRef) async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection('chatrooms')
+        .doc(chatroomKey)
+        .collection('chats')
+        .orderBy('createdDate', descending: true)
+        .startAfterDocument(await currentOldestChatRef.get())
+        .get();
+
+    List<ChatModel> chatList = [];
+
+    for (var docSnapshot in snapshot.docs) {
+      ChatModel chatModel = ChatModel.fromQuerySnapshot(docSnapshot);
+      chatList.add(chatModel);
+    }
+    return chatList;
+  }
 }
