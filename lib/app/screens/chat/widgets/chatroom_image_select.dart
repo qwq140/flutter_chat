@@ -11,7 +11,6 @@ class ChatroomImageSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('fdsfuu93939');
     Uint8List? img = context.watch<ChatroomCreateProvider>().img;
     return Stack(
       clipBehavior: Clip.none,
@@ -24,7 +23,7 @@ class ChatroomImageSelect extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(color: Colors.grey),
-              color: Colors.purple
+              color: Colors.black38
             ),
             child: img == null ? Container() : Image.memory(img,fit: BoxFit.cover),
           ),

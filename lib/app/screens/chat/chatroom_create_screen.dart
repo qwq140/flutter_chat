@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/app/const/spoqa.dart';
 import 'package:flutter_chat/app/data/user_model.dart';
+import 'package:flutter_chat/app/screens/chat/widgets/chatroom_create_input_field.dart';
 import 'package:flutter_chat/app/screens/chat/widgets/chatroom_image_select.dart';
 import 'package:flutter_chat/app/state/chatroom_create_provider.dart';
 import 'package:flutter_chat/app/state/chatroom_list_provider.dart';
@@ -28,6 +29,13 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
     _introController = TextEditingController();
     super.initState();
   }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _titleController.dispose();
+    _introController.dispose();
+    super.dispose();
+  }
 
   void _showDialog(String text){
     showDialog(
@@ -48,7 +56,6 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('dsdsds');
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -70,7 +77,7 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
                   return;
                 }
                 UserModel userModel = context.read<UserProvider>().userModel!;
-                await context.read<ChatroomCreateProvider>().submit(userModel);
+                await context.read<ChatroomCreateProvider>().submit(userModel.userKey);
                 _showDialog('등록이 완료되었습니다.');
                 context.pop();
               },
@@ -97,44 +104,22 @@ class _ChatroomCreateScreenState extends State<ChatroomCreateScreen> {
               const Spacer(
                 flex: 150,
               ),
-              TextFormField(
-                controller: _titleController,
-                onChanged: (value) {
-                  context.read<ChatroomCreateProvider>().title = value;
-                },
-                decoration: InputDecoration(
-                  labelText: '채팅방 이름',
-                  labelStyle: Spoqa.grey_s14_w400,
-                  floatingLabelStyle: Spoqa.black_s14_w400,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                cursorColor: Colors.black,
+              ChatroomCreateInputField(
+                  controller: _titleController,
+                  onChange: (value){
+                    context.read<ChatroomCreateProvider>().title = value;
+                  },
+                  hintText: '채팅방 이름'
               ),
               SizedBox(
                 height: 15,
               ),
-              TextFormField(
-                controller: _introController,
-                onChanged: (value) {
-                  context.read<ChatroomCreateProvider>().intro = value;
-                },
-                decoration: const InputDecoration(
-                  labelText: '채팅방 소개',
-                  labelStyle: Spoqa.grey_s14_w400,
-                  floatingLabelStyle: Spoqa.black_s14_w400,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                cursorColor: Colors.black,
+              ChatroomCreateInputField(
+                  controller: _introController,
+                  onChange: (value){
+                    context.read<ChatroomCreateProvider>().intro = value;
+                  },
+                  hintText: '채팅방 소개',
               ),
               Spacer(
                 flex: 200,

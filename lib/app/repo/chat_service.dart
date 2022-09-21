@@ -12,23 +12,14 @@ class ChatService {
 
   ChatService._internal();
 
-  Future createNewChatroom(ChatroomModel chatroom, UserModel userModel) async {
-    DocumentReference<
-        Map<String, dynamic>> documentReference = FirebaseFirestore.instance
-        .collection('chatrooms').doc(chatroom.chatroomKey);
+  Future createNewChatroom(ChatroomModel chatroom) async {
+    DocumentReference<Map<String, dynamic>> documentReference = FirebaseFirestore.instance.collection('chatrooms').doc(chatroom.chatroomKey);
 
     final DocumentSnapshot<
         Map<String, dynamic>> documentSnapshot = await documentReference.get();
 
     if (!documentSnapshot.exists) {
       await documentReference.set(chatroom.toJson());
-      DocumentReference<Map<String, dynamic>> chatDocRef = FirebaseFirestore
-          .instance
-          .collection('chatrooms')
-          .doc(documentSnapshot.id)
-          .collection('users')
-          .doc();
-      await chatDocRef.set(userModel.toJson());
     }
   }
 
@@ -170,5 +161,12 @@ class ChatService {
       chatList.add(chatModel);
     }
     return chatList;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> connectChatroomList() {
+    return FirebaseFirestore.instance
+        .collection('chatrooms')
+        .orderBy('createdDate', descending: true)
+        .snapshots();
   }
 }

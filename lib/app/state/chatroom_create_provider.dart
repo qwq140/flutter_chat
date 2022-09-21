@@ -39,9 +39,9 @@ class ChatroomCreateProvider extends ChangeNotifier {
     return true;
   }
 
-  Future submit(UserModel userModel) async {
+  Future submit(String userKey) async {
     String formatDate = DateFormat('yyyyMMddHHmm').format(DateTime.now());
-    String chatroomKey = 'CHATROOM_$formatDate${userModel.userKey}';
+    String chatroomKey = 'CHATROOM_$formatDate$userKey';
 
     String? downloadImageUrl;
 
@@ -52,14 +52,14 @@ class ChatroomCreateProvider extends ChangeNotifier {
     ChatroomModel chatroomModel = ChatroomModel(
       chatroomKey: chatroomKey,
       imageUrl: downloadImageUrl,
-      hostKey: userModel.userKey,
+      hostKey: userKey,
       createdDate: DateTime.now(),
       lastMsgDate: DateTime.now(),
       title: title ?? "",
       intro: intro,
-      userKeys: [userModel.userKey],
+      userKeys: [userKey],
     );
 
-    await ChatService().createNewChatroom(chatroomModel, userModel);
+    await ChatService().createNewChatroom(chatroomModel);
   }
 }

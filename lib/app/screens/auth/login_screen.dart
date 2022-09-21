@@ -21,7 +21,6 @@ class LoginScreen extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 UserService().signInWithGoogle();
-                // FirebaseAuth.instance.signOut();
               },
               borderRadius: BorderRadius.circular(30),
               child: Container(
